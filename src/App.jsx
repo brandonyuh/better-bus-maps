@@ -1,25 +1,13 @@
-import logo from './logo.svg';
-import './App.scss';
+import "./App.scss";
+import { useLoadScript } from "@react-google-maps/api";
+import BusMap from "./components/BusMap/BusMap";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    libraries: ["drawing"],
+  });
+  return <div className="App">{!isLoaded ? <h1>Loading...</h1> : <BusMap />}</div>;
 }
 
 export default App;
