@@ -1,5 +1,5 @@
 /* global google */
-import { GoogleMap, Polygon, Polyline, Marker } from "@react-google-maps/api";
+import { GoogleMap, Polygon, Polyline, Marker, InfoWindow } from "@react-google-maps/api";
 import React from "react";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,8 +8,16 @@ import "react-toastify/dist/ReactToastify.css";
 import "./BusMap.scss";
 import Data99 from "./099-E1.json";
 import Image99 from "../../data/dist/svg/099.svg";
+import BusStopIcon from "../../assets/bus-stop-icon.svg";
 
 function BusMap() {
+  const [latitude, setLatitude] = useState(49.261111);
+  const [longitude, setLongitude] = useState(-123.113889);
+  const [mapRef, setMapRef] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+  const [infoWindowData, setInfoWindowData] = useState();
+  const [busStops, setBusStops] = useState([]);
+
   const [inverseDensity, setInverseDensity] = useState(7);
   const route = [];
   const markers = [];
@@ -24,6 +32,8 @@ function BusMap() {
     }
     showMarkers = (showMarkers + 1) % inverseDensity;
   });
+
+  const tempBusStops = [{ Latitude: 49.261111, Longitude: -123.113889 }];
 
   const [polygonPath, setPolygonPath] = useState();
   const [bufferDistance, setBufferDistance] = useState(0.0008);
@@ -60,23 +70,43 @@ function BusMap() {
       setStrokeWeight(3.0);
       setBufferDistance(0.0008);
     }
+    if (zoom >= 16) {
+      const center = this.getCenter();
+      getNearbyBusStops(center.lat(), center.lng());
+    }
   }
 
   function handleOnDragEnd() {
     const center = this.getCenter();
-    //toast(`Center: ${center.lat()}, ${center.lng()}`);
+    setLatitude(center.lat());
+    setLongitude(center.lng());
     getNearbyBusStops(center.lat(), center.lng());
   }
 
-  function getNearbyBusStops(lat, lng) {}
+  function getNearbyBusStops(lat, lng) {
+    lat = Math.round((lat + Number.EPSILON) * 100000) / 100000;
+    lng = Math.round((lng + Number.EPSILON) * 100000) / 100000;
+    const config = {
+      headers: {
+        Accept: "application/json",
+      },
+    };
+
+    axios.get(`https://api.translink.ca/rttiapi/v1/stops?apikey=${process.env.REACT_APP_TRANSLINK_API_KEY}&lat=${lat}&long=${lng}`, config).then((res) => {
+      setBusStops(res.data);
+    });
+  }
 
   return (
     <>
-      <GoogleMap mapContainerClassName="map-container" center={{ lat: 49.261111, lng: -123.113889 }} zoom={12} onLoad={onLoad} options={{ mapId: process.env.REACT_APP_MAP_ID }} onZoomChanged={handleZoomChanged} onDragEnd={handleOnDragEnd}>
+      <GoogleMap mapContainerClassName="map-container" center={{ lat: latitude, lng: longitude }} zoom={12} onLoad={onLoad} options={{ mapId: process.env.REACT_APP_MAP_ID }} onZoomChanged={handleZoomChanged} onDragEnd={handleOnDragEnd}>
         <Polyline path={route} />
         <Polygon path={polygonPath} options={polygonOptions} />
         {markers.map(({ lat, lng }) => (
           <Marker position={{ lat, lng }} icon={Image99} />
+        ))}
+        {busStops.map(({ Latitude, Longitude }) => (
+          <Marker position={{ lat: Latitude, lng: Longitude }} icon={{ url: require("../../assets/bus-stop-icon.svg").default, fillColor: "#000000", scaledSize: new google.maps.Size(37, 37) }} />
         ))}
       </GoogleMap>
       <ToastContainer position="top-center" autoClose={1000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
