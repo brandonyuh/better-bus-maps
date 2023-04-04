@@ -1,19 +1,28 @@
 /* global google */
-import { GoogleMap, Polygon, Polyline } from "@react-google-maps/api";
+import { GoogleMap, Polygon, Polyline, Marker } from "@react-google-maps/api";
 import React from "react";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import "./BusMap.scss";
 import Data99 from "./099-E1.json";
+import Image99 from "../../data/dist/svg/099.svg";
 
 function BusMap() {
+  const [inverseDensity, setInverseDensity] = useState(7);
   const route = [];
+  const markers = [];
+  let showMarkers = 0;
   Data99.features.forEach((feature) => {
     const { coordinates } = feature.geometry;
     const lng = coordinates[0][0];
     const lat = coordinates[0][1];
     route.push({ lat: lat, lng: lng });
+    if (!showMarkers) {
+      markers.push({ lat: lat, lng: lng });
+    }
+    showMarkers = (showMarkers + 1) % inverseDensity;
   });
 
   const [polygonPath, setPolygonPath] = useState();
@@ -53,11 +62,22 @@ function BusMap() {
     }
   }
 
+  function handleOnDragEnd() {
+    const center = this.getCenter();
+    //toast(`Center: ${center.lat()}, ${center.lng()}`);
+    getNearbyBusStops(center.lat(), center.lng());
+  }
+
+  function getNearbyBusStops(lat, lng) {}
+
   return (
     <>
-      <GoogleMap mapContainerClassName="map-container" center={{ lat: 49.261111, lng: -123.113889 }} zoom={12} onLoad={onLoad} options={{ mapId: process.env.REACT_APP_MAP_ID }} onZoomChanged={handleZoomChanged}>
+      <GoogleMap mapContainerClassName="map-container" center={{ lat: 49.261111, lng: -123.113889 }} zoom={12} onLoad={onLoad} options={{ mapId: process.env.REACT_APP_MAP_ID }} onZoomChanged={handleZoomChanged} onDragEnd={handleOnDragEnd}>
         <Polyline path={route} />
         <Polygon path={polygonPath} options={polygonOptions} />
+        {markers.map(({ lat, lng }) => (
+          <Marker position={{ lat, lng }} icon={Image99} />
+        ))}
       </GoogleMap>
       <ToastContainer position="top-center" autoClose={1000} hideProgressBar={false} newestOnTop closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
     </>

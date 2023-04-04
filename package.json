@@ -23,6 +23,7 @@
     "routes": "^2.1.0",
     "sass": "^1.60.0",
     "styled-components": "^5.3.9",
+    "text-to-svg": "^3.1.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
