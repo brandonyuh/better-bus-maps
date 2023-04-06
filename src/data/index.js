@@ -7,8 +7,8 @@ const DOMParser = require("xmldom").DOMParser;
 const TextToSVG = require("text-to-svg");
 const textToSVG = TextToSVG.loadSync();
 
-const attributes = { fill: "white", stroke: "black" };
-const options = { x: 0, y: 0, fontSize: 20, anchor: "top", attributes: attributes };
+const attributes = { fill: "black", stroke: "white" };
+const options = { x: 0, y: 0, fontSize: 40, anchor: "top", attributes: attributes };
 
 fs.readdirSync("./dist/kmz/").forEach((file) => {
   decompress(`./dist/kmz/${file}`, "./dist/kml/")
