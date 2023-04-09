@@ -44,10 +44,9 @@ function BusMap() {
         const lat = line.coordinates[0][1];
         if (lng && lat) {
           routeMap.push({ lat: lat, lng: lng });
-          if (!showMaker) {
+          if (Math.random() < busStopDensity) {
             routeMarkers.push({ lat: lat, lng: lng });
           }
-          showMaker = (showMaker + 1) % inverseDensity;
         }
       });
 
@@ -105,6 +104,7 @@ function BusMap() {
   const [busStops, setBusStops] = useState([]);
   const [zoom, setZoom] = useState(12);
 
+  const [busStopDensity, setBusStopDensity] = useState(0.05);
   const [inverseDensity, setInverseDensity] = useState(20);
   const [polygonPath, setPolygonPath] = useState();
   const [bufferDistance, setBufferDistance] = useState(0.0008);
@@ -177,23 +177,23 @@ function BusMap() {
     if (currentZoom === 12) {
       setStrokeWeight(3.0);
       setBufferDistance(0.0008);
-      setInverseDensity(20);
+      setBusStopDensity(0.05);
     } else if (currentZoom === 13) {
       setStrokeWeight(3.5);
       setBufferDistance(0.0005);
-      setInverseDensity(15);
+      setBusStopDensity(0.07);
     } else if (currentZoom === 14) {
       setStrokeWeight(4.0);
       setBufferDistance(0.0003);
-      setInverseDensity(10);
+      setBusStopDensity(0.1);
     } else if (currentZoom === 15) {
       setStrokeWeight(4.5);
       setBufferDistance(0.0002);
-      setInverseDensity(3);
+      setBusStopDensity(0.33);
     } else if (currentZoom === 16) {
       setStrokeWeight(5.0);
       setBufferDistance(0.00008);
-      setInverseDensity(1);
+      setBusStopDensity(1);
     }
     if (currentZoom >= DEFAULT_ZOOM_TO_SHOW_STOPS) {
       getNearbyBusStops(center.lat(), center.lng());
