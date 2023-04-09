@@ -8,7 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./BusMap.scss";
 import Data99 from "./099-E1.json";
 import Image99 from "../../data/dist/svg/099.svg";
-import BusStopIcon from "../../assets/bus-stop-icon.svg";
+import BusStopIcon from "../../assets/busstop.png";
 import RouteColors from "./RouteColors.json";
 import BusRouteMarkers from "../BusRouteMarkers/BusRouteMarkers";
 
@@ -260,8 +260,7 @@ function BusMap() {
           <Marker
             id={StopNo}
             position={{ lat: Latitude, lng: Longitude }}
-            //icon={{ url: BusStopIcon, fillColor: "#000000", scaledSize: new google.maps.Size(busStopIconSize, busStopIconSize) }}
-            icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
+            icon={BusStopIcon}
             onClick={() => {
               handleMarkerClick(StopNo, Latitude, Longitude);
             }}
