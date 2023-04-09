@@ -28,7 +28,6 @@ function BusMap() {
     } else {
       setRedraw(true);
     }
-    console.log("bufferDistance " + bufferDistance);
     context.keys().forEach((key) => {
       const fileName = key.replace("./", "");
       const resource = require(`../../data/dist/json/${fileName}`);
@@ -101,13 +100,15 @@ function BusMap() {
   const [busStops, setBusStops] = useState([]);
   const [zoom, setZoom] = useState(12);
 
+  //0 is none, 0.5 is half of them, 1 is all of them
   const [busStopDensity, setBusStopDensity] = useState(0.05);
+  //the width of the bus route
   const [bufferDistance, setBufferDistance] = useState(0.0008);
   const [strokeWeight, setStrokeWeight] = useState(3.0);
 
   const [routeLabelSize, setRouteLabelSize] = useState(20);
 
-  const [opacity, setOpacity] = useState(0.8);
+  const [opacity, setOpacity] = useState(0.5);
 
   const [redraw, setRedraw] = useState(false);
 
@@ -154,6 +155,7 @@ function BusMap() {
     if (currentZoom >= DEFAULT_ZOOM_TO_SHOW_STOPS) {
       getNearbyBusStops(center.lat(), center.lng());
     } else {
+      //clear bus stops if we are zoomed out too far
       setBusStops([]);
     }
   }
