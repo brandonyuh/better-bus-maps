@@ -1,13 +1,11 @@
 /* global google */
-import { GoogleMap, Polygon, Polyline, Marker, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, Polygon, Marker, InfoWindow } from "@react-google-maps/api";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import "./BusMap.scss";
-import Data99 from "./099-E1.json";
-import Image99 from "../../data/dist/svg/099.svg";
 import BusStopIcon from "../../assets/busstop.png";
 import RouteColors from "./RouteColors.json";
 import BusRouteMarkers from "../BusRouteMarkers/BusRouteMarkers";
@@ -38,7 +36,6 @@ function BusMap() {
       busRoutesData[namespace] = JSON.parse(JSON.stringify(resource));
       const routeMap = [];
       const routeMarkers = [];
-      let showMaker = 0;
       busRoutesData[namespace].features[0].geometry.geometries.forEach((line) => {
         const lng = line.coordinates[0][0];
         const lat = line.coordinates[0][1];
@@ -105,13 +102,10 @@ function BusMap() {
   const [zoom, setZoom] = useState(12);
 
   const [busStopDensity, setBusStopDensity] = useState(0.05);
-  const [inverseDensity, setInverseDensity] = useState(20);
-  const [polygonPath, setPolygonPath] = useState();
   const [bufferDistance, setBufferDistance] = useState(0.0008);
   const [strokeWeight, setStrokeWeight] = useState(3.0);
 
   const [routeLabelSize, setRouteLabelSize] = useState(20);
-  const [busStopIconSize, setBusStopIconSize] = useState(10);
 
   const [opacity, setOpacity] = useState(0.8);
 
@@ -121,44 +115,11 @@ function BusMap() {
   const markers = [];
   let showMarkers = 0;
 
-  Data99.features.forEach((feature) => {
-    const { coordinates } = feature.geometry;
-    const lng = coordinates[0][0];
-    const lat = coordinates[0][1];
-    route.push({ lat: lat, lng: lng });
-    if (!showMarkers) {
-      markers.push({ lat: lat, lng: lng });
-    }
-    showMarkers = (showMarkers + 1) % inverseDensity;
-  });
-
-  const polygonOptions = {
-    strokeColor: "#00FF00",
-    strokeOpacity: opacity,
-    strokeWeight: strokeWeight,
-    fillColor: "#FF00FF",
-    fillOpacity: opacity,
-  };
-
   const onLoad = () => {
-    drawPaths();
     buildBusRoutesList();
   };
 
-  const drawPaths = () => {
-    const path = route;
-    const x = path.map((obj) => new google.maps.LatLng(obj.lat + bufferDistance, obj.lng - bufferDistance));
-    path.reverse();
-    const y = path.map((obj) => new google.maps.LatLng(obj.lat - bufferDistance, obj.lng + bufferDistance));
-    const coordinates = [...x, ...y];
-    const areaBoundary = coordinates.map((obj) => {
-      return { lat: obj.lat(), lng: obj.lng() };
-    });
-    setPolygonPath(areaBoundary);
-  };
-
   useEffect(() => {
-    drawPaths();
     buildBusRoutesList();
     return () => {};
   }, [bufferDistance]);
@@ -169,11 +130,6 @@ function BusMap() {
     const center = this.getCenter();
     setLatitude(center.lat());
     setLongitude(center.lng());
-    //toast(`Zoom level: ${currentZoom}`);
-    // const newStrokeWeight = 3.0 + (zoom - 12) * 0.5;
-    // setStrokeWeight(newStrokeWeight);
-    // const newBufferDistance = 0.0008 + (zoom - 12) * 0.0001;
-    // setBufferDistance(newBufferDistance);
     if (currentZoom === 12) {
       setStrokeWeight(3.0);
       setBufferDistance(0.0008);
@@ -251,11 +207,6 @@ function BusMap() {
           </>
         ))}
 
-        {/* <Polyline path={route} />
-        <Polygon path={polygonPath} options={polygonOptions} />
-        {markers.map(({ lat, lng }) => (
-          <Marker position={{ lat, lng }} icon={{ url: require("../../data/dist/svg/099.svg").default, scaledSize: new google.maps.Size(routeLabelSize, routeLabelSize) }} />
-        ))} */}
         {busStops.map(({ Latitude, Longitude, StopNo }) => (
           <Marker
             id={StopNo}
