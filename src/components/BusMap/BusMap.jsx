@@ -24,6 +24,13 @@ function BusMap() {
   const [busRoutesList, setBusRoutesList] = useState([]);
 
   const buildBusRoutesList = () => {
+    const tempBusRoutesList = [];
+    if (redraw) {
+      setBusRoutesList([]);
+    } else {
+      setRedraw(true);
+    }
+    console.log("bufferDistance " + bufferDistance);
     context.keys().forEach((key) => {
       const fileName = key.replace("./", "");
       const resource = require(`../../data/dist/json/${fileName}`);
@@ -75,9 +82,14 @@ function BusMap() {
         polygonOptions: polygonOptions,
         path: areaBoundary,
       };
-
-      busRoutesList.push(busRoute);
+      tempBusRoutesList.push(busRoute);
+      if (!redraw) {
+        busRoutesList.push(busRoute);
+      }
     });
+    if (redraw) {
+      setBusRoutesList(tempBusRoutesList);
+    }
   };
 
   const config = {
@@ -93,15 +105,17 @@ function BusMap() {
   const [busStops, setBusStops] = useState([]);
   const [zoom, setZoom] = useState(12);
 
-  const [inverseDensity, setInverseDensity] = useState(10);
+  const [inverseDensity, setInverseDensity] = useState(20);
   const [polygonPath, setPolygonPath] = useState();
-  const [bufferDistance, setBufferDistance] = useState(0.0001);
+  const [bufferDistance, setBufferDistance] = useState(0.0008);
   const [strokeWeight, setStrokeWeight] = useState(3.0);
 
   const [routeLabelSize, setRouteLabelSize] = useState(12);
-  const [busStopIconSize, setBusStopIconSize] = useState(60);
+  const [busStopIconSize, setBusStopIconSize] = useState(10);
 
   const [opacity, setOpacity] = useState(0.8);
+
+  const [redraw, setRedraw] = useState(false);
 
   const route = [];
   const markers = [];
@@ -163,18 +177,23 @@ function BusMap() {
     if (currentZoom === 12) {
       setStrokeWeight(3.0);
       setBufferDistance(0.0008);
+      setInverseDensity(20);
     } else if (currentZoom === 13) {
       setStrokeWeight(3.5);
       setBufferDistance(0.0005);
+      setInverseDensity(15);
     } else if (currentZoom === 14) {
       setStrokeWeight(4.0);
       setBufferDistance(0.0003);
+      setInverseDensity(10);
     } else if (currentZoom === 15) {
       setStrokeWeight(4.5);
       setBufferDistance(0.0002);
+      setInverseDensity(3);
     } else if (currentZoom === 16) {
       setStrokeWeight(5.0);
       setBufferDistance(0.00008);
+      setInverseDensity(1);
     }
     if (currentZoom >= DEFAULT_ZOOM_TO_SHOW_STOPS) {
       getNearbyBusStops(center.lat(), center.lng());
@@ -198,7 +217,7 @@ function BusMap() {
     lat = Math.round((lat + Number.EPSILON) * 100000) / 100000;
     lng = Math.round((lng + Number.EPSILON) * 100000) / 100000;
 
-    axios.get(`https://api.translink.ca/rttiapi/v1/stops?apikey=${process.env.REACT_APP_TRANSLINK_API_KEY}&lat=${lat}&long=${lng}&radius=1000`, config).then((res) => {
+    axios.get(`https://api.translink.ca/rttiapi/v1/stops?apikey=${process.env.REACT_APP_TRANSLINK_API_KEY}&lat=${lat}&long=${lng}&radius=500`, config).then((res) => {
       setBusStops(res.data);
     });
   }
@@ -241,7 +260,8 @@ function BusMap() {
           <Marker
             id={StopNo}
             position={{ lat: Latitude, lng: Longitude }}
-            icon={{ url: BusStopIcon, fillColor: "#000000", scaledSize: new google.maps.Size(busStopIconSize, busStopIconSize) }}
+            //icon={{ url: BusStopIcon, fillColor: "#000000", scaledSize: new google.maps.Size(busStopIconSize, busStopIconSize) }}
+            icon={`http://maps.google.com/mapfiles/ms/icons/blue-dot.png`}
             onClick={() => {
               handleMarkerClick(StopNo, Latitude, Longitude);
             }}
