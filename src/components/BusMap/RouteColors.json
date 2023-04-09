@@ -1,6 +1,122 @@
 {
   "002": {
-    "strokeColor": "#00FF00",
-    "fillColor": "#FF00FF"
+    "strokeColor": "#b087c3",
+    "fillColor": "#0225b2"
+  },
+  "003": {
+    "strokeColor": "#d059d6",
+    "fillColor": "#aa1da0"
+  },
+  "004": {
+    "strokeColor": "#51ed23",
+    "fillColor": "#5d6018"
+  },
+  "005": {
+    "strokeColor": "#e943f4",
+    "fillColor": "#df059f"
+  },
+  "007": {
+    "strokeColor": "#b99941",
+    "fillColor": "#eaaa99"
+  },
+  "008": {
+    "strokeColor": "#88af46",
+    "fillColor": "#d98716"
+  },
+  "009": {
+    "strokeColor": "#0c3fcc",
+    "fillColor": "#89d080"
+  },
+  "010": {
+    "strokeColor": "#1c92ba",
+    "fillColor": "#687562"
+  },
+  "015": {
+    "strokeColor": "#2ba2d5",
+    "fillColor": "#7c65c4"
+  },
+  "016": {
+    "strokeColor": "#625eb7",
+    "fillColor": "#ef3966"
+  },
+  "017": {
+    "strokeColor": "#e9095c",
+    "fillColor": "#17ba6f"
+  },
+  "019": {
+    "strokeColor": "#acee57",
+    "fillColor": "#8de821"
+  },
+  "020": {
+    "strokeColor": "#99d76c",
+    "fillColor": "#dced7f"
+  },
+  "022": {
+    "strokeColor": "#a60220",
+    "fillColor": "#76b81d"
+  },
+  "023": {
+    "strokeColor": "#c486e5",
+    "fillColor": "#82e4c0"
+  },
+  "025": {
+    "strokeColor": "#1b2dd0",
+    "fillColor": "#1fc0f8"
+  },
+  "026": {
+    "strokeColor": "#2b1c2b",
+    "fillColor": "#cff453"
+  },
+  "027": {
+    "strokeColor": "#90e2b2",
+    "fillColor": "#8f23c5"
+  },
+  "028": {
+    "strokeColor": "#16052c",
+    "fillColor": "#b0d0d6"
+  },
+  "029": {
+    "strokeColor": "#31b0f9",
+    "fillColor": "#ba5609"
+  },
+  "031": {
+    "strokeColor": "#69daaa",
+    "fillColor": "#ef3b8b"
+  },
+  "033": {
+    "strokeColor": "#8604e3",
+    "fillColor": "#9cf55c"
+  },
+  "041": {
+    "strokeColor": "#3c79a3",
+    "fillColor": "#ad791b"
+  },
+  "044": {
+    "strokeColor": "#109252",
+    "fillColor": "#200aa9"
+  },
+  "049": {
+    "strokeColor": "#3f4f31",
+    "fillColor": "#287f3d"
+  },
+  "050": {
+    "strokeColor": "#bc8f0a",
+    "fillColor": "#360040"
+  },
+  "068": {
+    "strokeColor": "#350f68",
+    "fillColor": "#1055f7"
+  },
+  "084": {
+    "strokeColor": "#d56f3c",
+    "fillColor": "#3e0f74"
+  },
+  "099": {
+    "strokeColor": "#556885",
+    "fillColor": "#b66a6c"
+  },
+  "100": {
+    "strokeColor": "#b479f0",
+    "fillColor": "#7a8137"
   }
 }
