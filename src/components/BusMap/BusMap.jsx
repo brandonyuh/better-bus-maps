@@ -110,7 +110,7 @@ function BusMap() {
   const [bufferDistance, setBufferDistance] = useState(0.0008);
   const [strokeWeight, setStrokeWeight] = useState(3.0);
 
-  const [routeLabelSize, setRouteLabelSize] = useState(12);
+  const [routeLabelSize, setRouteLabelSize] = useState(20);
   const [busStopIconSize, setBusStopIconSize] = useState(10);
 
   const [opacity, setOpacity] = useState(0.8);
