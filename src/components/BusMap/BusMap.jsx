@@ -9,14 +9,77 @@ import "./BusMap.scss";
 import Data99 from "./099-E1.json";
 import Image99 from "../../data/dist/svg/099.svg";
 import BusStopIcon from "../../assets/bus-stop-icon.svg";
+import RouteColors from "./RouteColors.json";
+import BusRouteMarkers from "../BusRouteMarkers/BusRouteMarkers";
 
-//This is Vancouver
+//This is Vancouver, Canada
 const DEFAULT_LAT = 49.261111;
 const DEFAULT_LNG = -123.113889;
 
 const DEFAULT_ZOOM_TO_SHOW_STOPS = 16;
 
 function BusMap() {
+  const context = require.context("../../data/dist/json/", true, /\.json$/);
+  const busRoutesData = {};
+  const [busRoutesList, setBusRoutesList] = useState([]);
+
+  const buildBusRoutesList = () => {
+    context.keys().forEach((key) => {
+      const fileName = key.replace("./", "");
+      const resource = require(`../../data/dist/json/${fileName}`);
+      const namespace = fileName.replace(".json", "");
+      busRoutesData[namespace] = JSON.parse(JSON.stringify(resource));
+      const routeMap = [];
+      const routeMarkers = [];
+      let showMaker = 0;
+      busRoutesData[namespace].features[0].geometry.geometries.forEach((line) => {
+        const lng = line.coordinates[0][0];
+        const lat = line.coordinates[0][1];
+        if (lng && lat) {
+          routeMap.push({ lat: lat, lng: lng });
+          if (!showMaker) {
+            routeMarkers.push({ lat: lat, lng: lng });
+          }
+          showMaker = (showMaker + 1) % inverseDensity;
+        }
+      });
+
+      let strokeColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+      let fillColor = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+      if (RouteColors[namespace]) {
+        strokeColor = RouteColors[namespace].strokeColor;
+        fillColor = RouteColors[namespace].fillColor;
+      }
+
+      const polygonOptions = {
+        strokeColor: strokeColor,
+        strokeOpacity: opacity,
+        strokeWeight: strokeWeight,
+        fillColor: fillColor,
+        fillOpacity: opacity,
+      };
+      const path = routeMap;
+      const x = path.map((obj) => new google.maps.LatLng(obj.lat + bufferDistance, obj.lng - bufferDistance));
+      path.reverse();
+      const y = path.map((obj) => new google.maps.LatLng(obj.lat - bufferDistance, obj.lng + bufferDistance));
+      const coordinates = [...x, ...y];
+      const areaBoundary = coordinates.map((obj) => {
+        return { lat: obj.lat(), lng: obj.lng() };
+      });
+
+      const busRoute = {
+        routeNo: namespace,
+        routeMap: routeMap,
+        routeMarkers: routeMarkers,
+        polygonOptions: polygonOptions,
+        path: areaBoundary,
+      };
+
+      busRoutesList.push(busRoute);
+    });
+  };
+
   const config = {
     headers: {
       Accept: "application/json",
@@ -30,14 +93,20 @@ function BusMap() {
   const [busStops, setBusStops] = useState([]);
   const [zoom, setZoom] = useState(12);
 
-  const [inverseDensity, setInverseDensity] = useState(7);
+  const [inverseDensity, setInverseDensity] = useState(10);
   const [polygonPath, setPolygonPath] = useState();
-  const [bufferDistance, setBufferDistance] = useState(0.0008);
+  const [bufferDistance, setBufferDistance] = useState(0.0001);
   const [strokeWeight, setStrokeWeight] = useState(3.0);
+
+  const [routeLabelSize, setRouteLabelSize] = useState(12);
+  const [busStopIconSize, setBusStopIconSize] = useState(60);
+
+  const [opacity, setOpacity] = useState(0.8);
 
   const route = [];
   const markers = [];
   let showMarkers = 0;
+
   Data99.features.forEach((feature) => {
     const { coordinates } = feature.geometry;
     const lng = coordinates[0][0];
@@ -51,14 +120,15 @@ function BusMap() {
 
   const polygonOptions = {
     strokeColor: "#00FF00",
-    strokeOpacity: 0.8,
+    strokeOpacity: opacity,
     strokeWeight: strokeWeight,
     fillColor: "#FF00FF",
-    fillOpacity: 0.8,
+    fillOpacity: opacity,
   };
 
   const onLoad = () => {
     drawPaths();
+    buildBusRoutesList();
   };
 
   const drawPaths = () => {
@@ -75,6 +145,7 @@ function BusMap() {
 
   useEffect(() => {
     drawPaths();
+    buildBusRoutesList();
     return () => {};
   }, [bufferDistance]);
 
@@ -84,7 +155,7 @@ function BusMap() {
     const center = this.getCenter();
     setLatitude(center.lat());
     setLongitude(center.lng());
-    toast(`Zoom level: ${currentZoom}`);
+    //toast(`Zoom level: ${currentZoom}`);
     // const newStrokeWeight = 3.0 + (zoom - 12) * 0.5;
     // setStrokeWeight(newStrokeWeight);
     // const newBufferDistance = 0.0008 + (zoom - 12) * 0.0001;
@@ -123,6 +194,7 @@ function BusMap() {
   }
 
   function getNearbyBusStops(lat, lng) {
+    //round to the nearest 6 digit because translink api won't take more precise numbers
     lat = Math.round((lat + Number.EPSILON) * 100000) / 100000;
     lng = Math.round((lng + Number.EPSILON) * 100000) / 100000;
 
@@ -150,20 +222,26 @@ function BusMap() {
     });
     setIsOpen(true);
   };
-
   return (
     <>
       <GoogleMap mapContainerClassName="map-container" center={{ lat: latitude, lng: longitude }} zoom={12} onLoad={onLoad} options={{ mapId: process.env.REACT_APP_MAP_ID }} onDragEnd={handleOnDragEnd} onZoomChanged={handleZoomChanged}>
-        <Polyline path={route} />
+        {busRoutesList.map((route) => (
+          <>
+            <Polygon key={route.routeNo} path={route.path} options={route.polygonOptions} />
+            <BusRouteMarkers route={route} routeLabelSize={routeLabelSize}></BusRouteMarkers>
+          </>
+        ))}
+
+        {/* <Polyline path={route} />
         <Polygon path={polygonPath} options={polygonOptions} />
         {markers.map(({ lat, lng }) => (
-          <Marker position={{ lat, lng }} icon={{ url: Image99, scaledSize: new google.maps.Size(30, 30) }} />
-        ))}
+          <Marker position={{ lat, lng }} icon={{ url: require("../../data/dist/svg/099.svg").default, scaledSize: new google.maps.Size(routeLabelSize, routeLabelSize) }} />
+        ))} */}
         {busStops.map(({ Latitude, Longitude, StopNo }) => (
           <Marker
             id={StopNo}
             position={{ lat: Latitude, lng: Longitude }}
-            icon={{ url: BusStopIcon, fillColor: "#000000", scaledSize: new google.maps.Size(60, 60) }}
+            icon={{ url: BusStopIcon, fillColor: "#000000", scaledSize: new google.maps.Size(busStopIconSize, busStopIconSize) }}
             onClick={() => {
               handleMarkerClick(StopNo, Latitude, Longitude);
             }}
