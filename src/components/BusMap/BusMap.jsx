@@ -2,7 +2,7 @@
 import { GoogleMap, Polygon, Marker, InfoWindow } from "@react-google-maps/api";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer, toast, useToast } from "react-toastify";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import "./BusMap.scss";
