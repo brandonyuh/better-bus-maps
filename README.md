@@ -1,6 +1,6 @@
-See the demo at: https://brandonyuh.me/BetterBusMaps/
+See the demo at: https://brandonyuh.me/BusMap/
 
-More info: https://brandonyuh.me/BetterBusMaps/about
+More info: https://brandonyuh.me/BusMap/about
 
 Made with:
 
