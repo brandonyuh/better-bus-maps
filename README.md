@@ -1,5 +1,7 @@
 See the demo at: https://brandonyuh.me/BetterBusMaps/
 
+More info: https://brandonyuh.me/BetterBusMaps/about
+
 Made with:
 
 ReactJS: https://reactjs.org/
