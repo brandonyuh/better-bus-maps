@@ -19,6 +19,9 @@ function BusRouteMarkers({ route, routeLabelSize }) {
     case "005":
       routeIcon = require(`../../data/dist/svg/005.svg`).default;
       break;
+    case "006":
+      routeIcon = require(`../../data/dist/svg/006.svg`).default;
+      break;
     case "007":
       routeIcon = require(`../../data/dist/svg/007.svg`).default;
       break;
@@ -98,7 +101,8 @@ function BusRouteMarkers({ route, routeLabelSize }) {
       routeIcon = require(`../../data/dist/svg/100.svg`).default;
       break;
     default:
-      routeIcon = require(`../../data/dist/svg/002.svg`).default;
+      routeIcon = require(`../../data/dist/svg/100.svg`).default;
+      console.log("No route icon found for route " + routeNo);
       break;
   }
   return (

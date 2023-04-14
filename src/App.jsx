@@ -10,14 +10,14 @@ function App() {
     libraries: ["drawing"],
   });
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<div className="App">{!isLoaded ? <h1>Loading...</h1> : <BusMap />}</div>} />
-        <Route path="/About" element={<About />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </Router>
-    // <div className="App">{!isLoaded ? <h1>Loading...</h1> : <BusMap />}</div>
+    // <Router>
+    //   <Routes>
+    //     <Route path="/" element={<div className="App">{!isLoaded ? <h1>Loading...</h1> : <BusMap />}</div>} />
+    //     <Route path="/About" element={<About />} />
+    //     <Route path="/about" element={<About />} />
+    //   </Routes>
+    // </Router>
+    <div className="App">{!isLoaded ? <h1>Loading...</h1> : <BusMap />}</div>
     // <About/>
   );
 }
