@@ -114,7 +114,7 @@ dist
 
 # production
 /build
-
+/build_map
 # misc
 .DS_Store
 .env.local
