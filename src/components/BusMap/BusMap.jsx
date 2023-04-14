@@ -155,6 +155,8 @@ function BusMap() {
     if (currentZoom >= DEFAULT_ZOOM_TO_SHOW_STOPS) {
       getNearbyBusStops(center.lat(), center.lng());
     } else {
+      //close the window if we are zoomed out too far
+      setIsOpen(false);
       //clear bus stops if we are zoomed out too far
       setBusStops([]);
     }
