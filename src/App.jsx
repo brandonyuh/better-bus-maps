@@ -18,6 +18,7 @@ function App() {
       </Routes>
     </Router>
     // <div className="App">{!isLoaded ? <h1>Loading...</h1> : <BusMap />}</div>
+    // <About/>
   );
 }
 
