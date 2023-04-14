@@ -163,6 +163,8 @@ function BusMap() {
   }
 
   function handleOnDragEnd() {
+    //close the info window
+    setIsOpen(false);
     const center = this.getCenter();
     setLatitude(center.lat());
     setLongitude(center.lng());
