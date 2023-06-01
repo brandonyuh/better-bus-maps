@@ -1,7 +1,7 @@
+[Click here for the working demo](https://brandonyuh.me/BetterBusMaps/)
 ![Bus Map of Vancouver](https://brandonyuh.me/portfolio/bbm.png)
-See the demo at: https://brandonyuh.me/BusMap/
 
-More info: https://brandonyuh.me/BusMap/about
+[Click here for more info] (https://brandonyuh.me/BusMap/about)
 
 Made with:
 
