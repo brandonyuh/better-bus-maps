@@ -1,4 +1,6 @@
-# [Click here for the working demo](https://brandonyuh.me/BetterBusMaps/)
+[Click here for the working demo](https://brandonyuh.me/BetterBusMaps/)
+======
+
 ![Bus Map of Vancouver](https://brandonyuh.me/portfolio/bbm.png)
 
 [Click here for more info](https://brandonyuh.me/BusMap/about)
